@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: #131211;
+    color: #f0ece4;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(176, 48, 48, 0.4);
+    color: #f0ece4;
+  }
+}
+
+/* ── grain overlay ── */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── scroll-triggered reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px) scale(0.97);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ── shimmer effect for cards ── */
+.shimmer-card {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.045) 50%,
+    transparent 60%
+  );
+  background-size: 400px 100%;
+  background-repeat: no-repeat;
+  background-position: -400px 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.shimmer-card:hover::before {
+  opacity: 1;
+  animation: shimmer 2.4s linear infinite;
+}
+
+/* ── hero cinematic vignette — only side edges, keeps face clear ── */
+.hero-vignette {
+  background: radial-gradient(
+    ellipse 95% 100% at 50% 35%,
+    transparent 45%,
+    rgba(13, 12, 11, 0.45) 80%,
+    rgba(13, 12, 11, 0.75) 100%
+  );
+}
+
+/* ── hero image kenburns pan ── */
+.hero-image {
+  animation: kenburns 28s ease-in-out infinite alternate;
+}
+@keyframes kenburns {
+  from { transform: scale(1.08) translateX(-1%) translateY(-1%); }
+  to   { transform: scale(1.15) translateX(1%) translateY(1.5%); }
+}
+
+/* ── animated gradient bg for sections ── */
+.animated-bg {
+  background: linear-gradient(135deg, #131211 0%, #1c1917 50%, #131211 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 14s ease infinite;
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── project card expansion ── */
+.project-card {
+  transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.project-card-detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s ease;
+  opacity: 0;
+}
+.project-card-detail.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.project-card-detail > div {
+  overflow: hidden;
+}
+
+/* ── section divider line ── */
+.divider-line {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(176, 48, 48, 0.4) 20%,
+    rgba(240, 236, 228, 0.12) 50%,
+    rgba(176, 48, 48, 0.4) 80%,
+    transparent
+  );
+}
+
+/* ── text glow ── */
+.text-glow-crimson {
+  text-shadow: 0 0 40px rgba(176, 48, 48, 0.5);
+}
+
+/* ── cursor glow orb ── */
+#cursor-glow {
+  position: fixed;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(176,48,48,0.07) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              top 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: left, top;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal {
+    opacity: 0;
+    transform: none;
+    transition: opacity 0.35s ease;
+  }
+  .reveal.is-in { opacity: 1; }
+  .hero-image { animation: none; }
+  .animated-bg { animation: none; }
+  * { animation-duration: 0.001ms !important; }
+}
