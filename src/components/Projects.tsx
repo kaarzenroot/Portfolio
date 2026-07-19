@@ -1,9 +1,20 @@
 import { useState } from 'react';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
+import GlareHover from './GlareHover';
+import ScrollFloat from './ScrollFloat';
 
+// ============================================================================
+// CONFIGURATION: ADD OR EDIT PROJECTS HERE
+// ============================================================================
+// To add a new project, simply copy an existing block and paste it below.
+// The project numbers (01, 02, etc.) will be automatically generated.
+// 
+// Project Status: 
+// - "Live": The "View Product" button will be visible and clickable.
+// - "In Development" (or any other string): The button will be invisible and disabled.
+// ============================================================================
 type Project = {
-  number: string;
   name: string;
   descriptor: string;
   description: string;
@@ -15,18 +26,16 @@ type Project = {
 
 const projects: Project[] = [
   {
-    number: '01',
     name: 'Prawly',
     descriptor: 'Anonymous feedback, made honest',
     description:
       "Prawly turns anonymous feedback into something actually useful. People say whatever they want — raw, unfiltered — and AI transforms it into honest, constructive insight. No trauma, just truth.",
     cta: 'Explore Prawly',
-    href: '#',
+    href: 'https://prawly.vercel.app',
     status: 'Live',
     tags: ['AI', 'Product', 'Feedback'],
   },
   {
-    number: '02',
     name: 'CampVault',
     descriptor: 'Secure academic infrastructure, rethought',
     description:
@@ -37,6 +46,7 @@ const projects: Project[] = [
     tags: ['Cybersecurity', 'SaaS', 'Institutions'],
   },
 ];
+// ============================================================================
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [open, setOpen] = useState(false);
@@ -48,117 +58,130 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       className={`reveal ${shown ? 'is-in' : ''}`}
       style={{ transitionDelay: `${index * 120}ms` }}
     >
-      <div
-        className={`shimmer-card project-card relative border rounded-sm cursor-pointer select-none
+      <GlareHover
+        glareColor="#ffffff"
+        glareOpacity={0.08}
+        glareSize={150}
+        className={`shimmer-card project-card relative border select-none transition-all duration-300
           ${open
             ? 'border-crimson/60 bg-ink-elevated shadow-[0_0_60px_rgba(176,48,48,0.12)]'
             : 'border-ink-line bg-ink-surface hover:border-bone-faint/30 hover:bg-ink-elevated hover:shadow-[0_8px_40px_rgba(0,0,0,0.4)]'
           }`}
         style={{ borderRadius: '4px' }}
-        onClick={() => setOpen((v) => !v)}
       >
-        {/* red left accent — thickens when open */}
-        <div
-          className={`absolute left-0 top-0 bottom-0 bg-crimson rounded-l-sm transition-all duration-500 ${
-            open ? 'w-[3px] opacity-100' : 'w-0 opacity-0'
-          }`}
-        />
+        <div onClick={() => setOpen((v) => !v)} className="w-full h-full">
+          {/* red left accent — thickens when open */}
+          <div
+            className={`absolute left-0 top-0 bottom-0 bg-crimson rounded-l-sm transition-all duration-500 ${open ? 'w-[3px] opacity-100' : 'w-0 opacity-0'
+              }`}
+          />
 
-        {/* card header row */}
-        <div className="flex items-center justify-between px-7 py-7 sm:px-10 sm:py-8 gap-6">
-          <div className="flex items-center gap-6 sm:gap-10 min-w-0">
-            <span className="font-mono text-xs text-bone-faint/60 shrink-0">{project.number}</span>
+          {/* card header row */}
+          <div className="flex items-center justify-between px-7 py-7 sm:px-10 sm:py-8 gap-6">
+            <div className="flex items-center gap-6 sm:gap-10 min-w-0">
+              <span className="font-mono text-xs text-bone-faint/60 shrink-0">
+                {String(index + 1).padStart(2, '0')}
+              </span>
 
-            <div className="min-w-0">
-              <h3
-                className="font-display font-extrabold tracking-tighter text-bone leading-none truncate"
-                style={{ fontSize: 'clamp(1.6rem, 4.5vw, 3.6rem)' }}
+              <div className="min-w-0">
+                <h3
+                  className="font-display font-extrabold tracking-tighter text-bone leading-none truncate"
+                  style={{ fontSize: 'clamp(1.6rem, 4.5vw, 3.6rem)' }}
+                >
+                  {project.name}
+                </h3>
+                <p className="mt-1.5 font-sans text-sm text-bone-muted leading-relaxed hidden sm:block">
+                  {project.descriptor}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 shrink-0">
+              {/* status */}
+              <span
+                className={`hidden sm:flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widestx ${project.status === 'Live' ? 'text-bone-muted' : 'text-bone-faint'
+                  }`}
               >
-                {project.name}
-              </h3>
-              <p className="mt-1.5 font-sans text-sm text-bone-muted leading-relaxed hidden sm:block">
-                {project.descriptor}
-              </p>
+                {project.status === 'Live' && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-crimson animate-pulse-slow" />
+                )}
+                {project.status}
+              </span>
+
+              {/* chevron */}
+              <div
+                className={`h-8 w-8 flex items-center justify-center border border-ink-line rounded-full text-bone-faint transition-all duration-500 ${open ? 'rotate-180 border-crimson/40 text-crimson' : ''
+                  }`}
+              >
+                <ChevronDown size={15} />
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 shrink-0">
-            {/* status */}
-            <span
-              className={`hidden sm:flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widestx ${
-                project.status === 'Live' ? 'text-bone-muted' : 'text-bone-faint'
-              }`}
-            >
-              {project.status === 'Live' && (
-                <span className="h-1.5 w-1.5 rounded-full bg-crimson animate-pulse-slow" />
-              )}
-              {project.status}
-            </span>
+          {/* expanded detail */}
+          <div className={`project-card-detail ${open ? 'open' : ''}`}>
+            <div>
+              <div className="px-7 pb-8 sm:px-10 sm:pb-10 pt-0">
+                {/* divider */}
+                <div className="divider-line mb-8" />
 
-            {/* chevron */}
-            <div
-              className={`h-8 w-8 flex items-center justify-center border border-ink-line rounded-full text-bone-faint transition-all duration-500 ${
-                open ? 'rotate-180 border-crimson/40 text-crimson' : ''
-              }`}
-            >
-              <ChevronDown size={15} />
-            </div>
-          </div>
-        </div>
-
-        {/* expanded detail */}
-        <div className={`project-card-detail ${open ? 'open' : ''}`}>
-          <div>
-            <div className="px-7 pb-8 sm:px-10 sm:pb-10 pt-0">
-              {/* divider */}
-              <div className="divider-line mb-8" />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-                <div>
-                  <p className="font-sans text-lg leading-relaxed text-bone/85">
-                    {project.description}
-                  </p>
-
-                  {/* tags */}
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="font-mono text-[11px] uppercase tracking-widestx text-bone-faint border border-ink-line bg-ink px-3 py-1"
-                        style={{ borderRadius: '2px' }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-col justify-between gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                   <div>
-                    <p className="font-mono text-[11px] uppercase tracking-widestx text-bone-faint mb-2">
-                      Status
+                    <p className="font-sans text-lg leading-relaxed text-bone/85">
+                      {project.description}
                     </p>
-                    <p className="font-sans text-base text-bone-muted">{project.status}</p>
+
+                    {/* tags */}
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="font-mono text-[11px] uppercase tracking-widestx text-bone-faint border border-ink-line bg-ink px-3 py-1"
+                          style={{ borderRadius: '2px' }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
-                  <a
-                    href={project.href}
-                    onClick={(e) => e.stopPropagation()}
-                    className="group inline-flex items-center gap-3 border border-crimson/70 bg-transparent px-7 py-3.5 font-sans text-sm text-bone self-start hover:bg-crimson hover:border-crimson transition-all duration-300 animate-glow-pulse"
-                    style={{ borderRadius: '3px' }}
-                  >
-                    {project.cta}
-                    <ArrowUpRight
-                      size={16}
-                      className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    />
-                  </a>
+                  <div className="flex flex-col justify-between gap-6">
+                    <div>
+                      <p className="font-mono text-[11px] uppercase tracking-widestx text-bone-faint mb-2">
+                        Status
+                      </p>
+                      <p className="font-sans text-base text-bone-muted">{project.status}</p>
+                    </div>
+
+                    <a
+                      href={project.status === 'Live' ? project.href : undefined}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (project.status !== 'Live') e.preventDefault();
+                      }}
+                      className={`group inline-flex items-center gap-3 border bg-transparent px-7 py-3.5 font-sans text-sm self-start transition-all duration-300 relative z-20 ${project.status === 'Live'
+                        ? 'border-crimson/70 text-bone hover:bg-crimson hover:border-crimson animate-glow-pulse'
+                        : 'opacity-0 pointer-events-none'
+                        }`}
+                      style={{ borderRadius: '3px' }}
+                      aria-disabled={project.status !== 'Live'}
+                      tabIndex={project.status === 'Live' ? 0 : -1}
+                    >
+                      {project.cta}
+                      <ArrowUpRight
+                        size={16}
+                        className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      />
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </GlareHover>
     </div>
   );
 }
@@ -181,14 +204,25 @@ export default function Projects() {
           <p className="font-mono text-sm uppercase tracking-widestx text-bone-muted">
             Selected Work
           </p>
-          <h2
-            className="mt-6 font-display font-extrabold tracking-tightest text-bone leading-[0.88]"
+          <div
+            className="mt-6 font-display font-extrabold tracking-tightest leading-[0.88]"
             style={{ fontSize: 'clamp(3.2rem, 8.5vw, 8rem)' }}
           >
-            Things I've
-            <br />
-            <span className="text-crimson">built.</span>
-          </h2>
+            <ScrollFloat
+              animationDuration={1}
+              stagger={0.03}
+              textClassName="text-bone leading-[0.88]"
+            >
+              Things I've
+            </ScrollFloat>
+            <ScrollFloat
+              animationDuration={1}
+              stagger={0.03}
+              textClassName="text-crimson leading-[0.88]"
+            >
+              built.
+            </ScrollFloat>
+          </div>
           <p className="mt-5 font-sans text-lg text-bone-muted max-w-md">
             Click any project to see what's underneath.
           </p>
@@ -197,7 +231,7 @@ export default function Projects() {
         {/* cards */}
         <div className="mt-16 space-y-4">
           {projects.map((p, i) => (
-            <ProjectCard key={p.number} project={p} index={i} />
+            <ProjectCard key={p.name} project={p} index={i} />
           ))}
         </div>
       </div>

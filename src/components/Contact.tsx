@@ -1,13 +1,13 @@
 import { Github, Linkedin, Mail, Twitter } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
+import ScrollFloat from './ScrollFloat';
 
-const EMAIL = 'kaarnesh@example.com';
+const EMAIL = 'kaarzen.root@gmail.com';
 
 const socials = [
-  { Icon: Github, href: '#', label: 'GitHub' },
-  { Icon: Twitter, href: '#', label: 'Twitter' },
-  { Icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { Icon: Mail, href: `mailto:${EMAIL}`, label: 'Email' },
+  { Icon: Github, href: 'https://github.com/kaarzenroot', label: 'GitHub' },
+  { Icon: Linkedin, href: 'https://www.linkedin.com/in/kaarnesh-kartik-171492371?utm_source=share_via&utm_content=profile&utm_medium=member_android', label: 'LinkedIn' },
+  { Icon: Mail, href: `https://mail.google.com/mail/u/0/${EMAIL}`, label: 'Email', target: "_blank", rel: "noopener noreferrer" },
 ];
 
 export default function Contact() {
@@ -33,17 +33,28 @@ export default function Contact() {
           Contact
         </p>
 
-        <h2
-          className={`reveal mt-8 font-display font-extrabold tracking-tightest text-bone leading-[0.9] ${on}`}
+        <div
+          className={`reveal mt-8 font-display font-extrabold tracking-tightest leading-[0.9] ${on}`}
           style={{
             fontSize: 'clamp(3.2rem, 8.5vw, 8rem)',
             transitionDelay: '80ms',
           }}
         >
-          If something
-          <br />
-          <span className="text-crimson">resonated, say hi.</span>
-        </h2>
+          <ScrollFloat
+            animationDuration={1}
+            stagger={0.03}
+            textClassName="text-bone leading-[0.9]"
+          >
+            If something
+          </ScrollFloat>
+          <ScrollFloat
+            animationDuration={1}
+            stagger={0.03}
+            textClassName="text-crimson leading-[0.9]"
+          >
+            resonated, say hi.
+          </ScrollFloat>
+        </div>
 
         <a
           href={`mailto:${EMAIL}`}
@@ -60,11 +71,13 @@ export default function Contact() {
           className={`reveal mt-12 flex items-center gap-5 ${on}`}
           style={{ transitionDelay: '240ms' }}
         >
-          {socials.map(({ Icon, href, label }) => (
+          {socials.map(({ Icon, href, label, target, rel }) => (
             <a
               key={label}
               href={href}
               aria-label={label}
+              target={target}
+              rel={rel}
               className="h-11 w-11 flex items-center justify-center border border-ink-line rounded-full text-bone-faint opacity-70 transition-all duration-300 hover:opacity-100 hover:text-bone hover:border-crimson/40 hover:bg-ink-elevated hover:shadow-[0_0_20px_rgba(176,48,48,0.15)]"
             >
               <Icon size={19} strokeWidth={1.5} />

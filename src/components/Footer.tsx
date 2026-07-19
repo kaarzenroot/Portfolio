@@ -9,9 +9,8 @@ export default function Footer() {
       <div className="flex justify-center">
         <span
           aria-hidden
-          className={`pointer-events-none select-none font-display font-extrabold tracking-tightest text-bone leading-none transition-opacity duration-[2500ms] ${
-            shown ? 'opacity-[0.05]' : 'opacity-0'
-          }`}
+          className={`pointer-events-none select-none font-display font-extrabold tracking-tightest text-bone leading-none transition-opacity duration-[2500ms] ${shown ? 'opacity-[0.05]' : 'opacity-0'
+            }`}
           style={{ fontSize: '24vw' }}
         >
           KAARNESH

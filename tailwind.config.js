@@ -23,7 +23,7 @@ export default {
       },
       fontFamily: {
         display: ['"Cabinet Grotesk"', 'system-ui', 'sans-serif'],
-        hero: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        hero: ['"Antonio"', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },

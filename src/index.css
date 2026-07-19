@@ -83,13 +83,9 @@
   );
 }
 
-/* ── hero image kenburns pan ── */
+/* ── hero image static (animation removed for perfect layering) ── */
 .hero-image {
-  animation: kenburns 28s ease-in-out infinite alternate;
-}
-@keyframes kenburns {
-  from { transform: scale(1.08) translateX(-1%) translateY(-1%); }
-  to   { transform: scale(1.15) translateX(1%) translateY(1.5%); }
+  /* No animation to ensure layered images stay perfectly aligned */
 }
 
 /* ── animated gradient bg for sections ── */

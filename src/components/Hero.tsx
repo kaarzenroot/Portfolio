@@ -3,8 +3,26 @@ import { ChevronDown } from 'lucide-react';
 
 export default function Hero() {
   const [phase, setPhase] = useState(0);
-  const [hovered, setHovered] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const etchedRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const el = etchedRef.current;
+      if (!el) return;
+      const scrollY = window.scrollY;
+      const heroHeight = window.innerHeight;
+      const progress = Math.min(scrollY / (heroHeight * 0.6), 1);
+
+      el.style.opacity = `${1 - progress * 1.2}`;
+      el.style.filter = `blur(${progress * 5}px)`;
+      el.style.letterSpacing = `${0.35 + progress * 0.15}em`;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const timers = [
@@ -70,7 +88,7 @@ export default function Hero() {
   const show = (n: number) => phase >= n;
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-end pb-10 sm:pb-16">
+    <section className="relative min-h-screen w-full overflow-hidden">
       {/* ── background atmospheric glow — behind everything ── */}
       <div className="absolute inset-0 z-0">
         <div
@@ -82,23 +100,70 @@ export default function Hero() {
         />
       </div>
 
-      {/* ── portrait image — contained so full person shows ── */}
+      {/* ── portrait background image ── */}
       <div
-        className={`absolute inset-0 z-[1] flex items-start justify-center transition-opacity duration-[2200ms] ${
-          show(1) ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`absolute inset-0 z-[1] flex items-start justify-center transition-opacity duration-[2500ms] delay-[800ms] ${show(1) ? 'opacity-100' : 'opacity-0'}`}
       >
         <img
-          src="/images/image.png"
-          alt="Kaarnesh"
+          src="/images/portimg.png"
+          alt="Kaarnesh Background"
           className="hero-image w-full h-full object-contain"
-          style={{ objectPosition: 'center top' }}
+          style={{ objectPosition: 'center 15%' }}
           draggable={false}
         />
       </div>
 
+      {/* ── hero text wrapper (layered between images) ── */}
+      <div className="
+        absolute inset-x-0 top-0 z-[2]
+        flex items-start justify-center
+        pointer-events-none
+        -translate-y-[30px]
+        md:-translate-y-[70px]
+      ">
+        <div className="relative select-none w-full h-full flex items-center justify-center">
+          <h1
+            className="font-hero uppercase text-center transition-all duration-[1600ms] ease-out"
+            style={{
+              fontWeight: 600,
+              fontSize: 'clamp(250px, 30vw, 400px)',
+              lineHeight: 0.88,
+              letterSpacing: '-0.02em',
+              opacity: show(1) ? 1 : 0,
+              textShadow: '0 4px 80px rgba(0,0,0,0.9), 0 0 120px rgba(176,48,48,0.2)',
+              whiteSpace: 'nowrap',
+              transform: show(1)
+                ? 'translateY(0) scaleY(1.3)'
+                : 'translateY(-140px) scaleY(1.3)',
+              transformOrigin: 'center top',
+              maskImage: 'linear-gradient(to bottom, white 40%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, white 40%, transparent 100%)',
+            }}
+          >
+            <span style={{ color: '#f0ece4' }}>KAAR</span>
+            <span className="hidden md:inline" style={{ color: '#b03030' }}>NESH</span>
+          </h1>
+        </div>
+      </div>
+
+      {/* ── portrait foreground image ── */}
+      <div
+        className={`absolute inset-0 z-[3] flex items-start justify-center transition-opacity duration-[1000ms] delay-[800ms] pointer-events-none ${show(1) ? 'opacity-100' : 'opacity-0'
+          }`}
+      >
+        <img
+          src="/images/onlyme.png"
+          alt="Kaarnesh Foreground"
+          className="hero-image w-full h-full object-contain pointer-events-none"
+          style={{ objectPosition: 'center 15%' }}
+          draggable={false}
+        />
+      </div>
+
+
+
       {/* ── aura vignette — transparent center, fades edges into bg ── */}
-      <div className="absolute inset-0 z-[2] pointer-events-none">
+      <div className="absolute inset-0 z-[5] pointer-events-none">
         {/* radial aura — transparent center, dark edges, hides photo borders */}
         <div
           className="absolute inset-0"
@@ -128,59 +193,68 @@ export default function Hero() {
       {/* particle canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-[3] pointer-events-none"
+        className="absolute inset-0 z-[6] pointer-events-none"
       />
 
-      {/* ── text block — centered, positioned slightly lower ── */}
-      <div className="relative z-[4] w-full flex flex-col items-center text-center px-6 mb-10 sm:mb-16">
-
-        {/* ─── name with hover crossfade ─── */}
+      {/* ── bottom content block (tagline, tags) ── */}
+      <div className="absolute bottom-24 sm:bottom-32 left-0 right-0 z-[7] w-full flex flex-col items-center text-center px-6 pointer-events-none">
+        {/* ── etched glass secondary name ── */}
         <div
-          className="relative cursor-default select-none"
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
+          className="transition-all duration-1000 ease-out mb-5 translate-x-[-5px] md:translate-y-[30px]"
           style={{
-            height: 'clamp(4rem, 18vw, 17rem)',
-            width: '100%',
+            opacity: show(2) ? 1 : 0,
+            transitionDelay: '1000ms',
           }}
         >
-          {/* KAARZEN — default state */}
-          <h1
-            className="font-display font-extrabold tracking-tightest absolute inset-0 flex items-center justify-center transition-opacity duration-500 ease-in-out"
+          <h2
+            ref={etchedRef}
+            className="font-hero uppercase select-none"
             style={{
-              fontSize: 'clamp(4rem, 18vw, 17rem)',
-              lineHeight: 0.85,
-              opacity: hovered ? 0 : show(1) ? 1 : 0,
-              transitionDelay: show(1) ? '100ms' : '0ms',
-              textShadow: '0 4px 80px rgba(0,0,0,0.85), 0 0 120px rgba(176,48,48,0.25)',
-              whiteSpace: 'nowrap',
+              transform: 'translateX(18px)',
+              fontWeight: 1000,
+              fontSize: 'clamp(3rem, 6vw, 100px)',
+              letterSpacing: 'clamp(0.2em, 2vw, 1em)',
+              color: 'transparent',
+              WebkitTextStroke: '1px rgba(255, 255, 255, 0.55)',
+              textShadow: '0 0 20px rgba(112, 30, 30, 0.12), 0 1px 0 rgba(255, 255, 255, 0.08)',
+              background: 'none',
+              willChange: 'opacity, filter, letter-spacing'
             }}
           >
-            <span style={{ color: '#f0ece4' }}>Kaar</span>
-            <span style={{ color: '#b03030' }}>zen</span>
-          </h1>
+            KAARNESH
+          </h2>
+        </div>
 
-          {/* KAARNESH — hover state */}
+        {/* ── mobile 'NESH' part (hidden on md and larger) ── */}
+        <div
+          className="md:hidden transition-all duration-1000 ease-out mb-5"
+          style={{
+            opacity: show(2) ? 1 : 0,
+            transform: show(2) ? 'translateY(-15px)' : 'translateY(10px)',
+            transitionDelay: '150ms',
+          }}
+        >
           <h1
-            aria-hidden
-            className="font-display font-extrabold tracking-tightest absolute inset-0 flex items-center justify-center transition-opacity duration-500 ease-in-out"
+            className="font-hero uppercase text-center"
             style={{
-              fontSize: 'clamp(4rem, 18vw, 17rem)',
-              lineHeight: 0.85,
-              opacity: hovered ? 1 : 0,
-              textShadow: '0 4px 80px rgba(0,0,0,0.85), 0 0 120px rgba(176,48,48,0.3)',
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
+              fontWeight: 600,
+              fontSize: 'clamp(250px, 24vw, 400px)',
+              lineHeight: 0.88,
+              letterSpacing: '-0.02em',
+              textShadow: '0 4px 80px rgba(0,0,0,0.9), 0 0 120px rgba(176,48,48,0.2)',
+              transform: 'scaleY(1.3)',
+              color: '#b03030',
+              maskImage: 'linear-gradient(to bottom, white 40%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, white 40%, transparent 100%)',
             }}
           >
-            <span style={{ color: '#f0ece4' }}>Kaar</span>
-            <span style={{ color: '#b03030' }}>nesh</span>
+            NESH
           </h1>
         </div>
 
         {/* thin crimson rule */}
         <div
-          className="h-px bg-crimson transition-all duration-1000 ease-out mt-4"
+          className="h-px bg-crimson transition-all duration-1000 ease-out"
           style={{
             width: show(2) ? '5rem' : '0',
             opacity: show(2) ? 0.85 : 0,
@@ -213,7 +287,7 @@ export default function Hero() {
             transitionDelay: '550ms',
           }}
         >
-          {['Cybersecurity', 'Creative Director', 'Future Founder'].map((tag) => (
+          {['Cybersecurity', 'Creative', 'Future Founder'].map((tag) => (
             <span
               key={tag}
               className="font-mono text-[10px] uppercase tracking-widestx text-bone-faint border border-bone-faint/25 px-3 py-1.5 bg-ink/40 backdrop-blur-sm"
@@ -227,7 +301,7 @@ export default function Hero() {
 
       {/* scroll indicator */}
       <div
-        className="absolute bottom-7 left-1/2 -translate-x-1/2 z-[4] flex flex-col items-center gap-2 transition-opacity duration-1000"
+        className="absolute bottom-7 left-1/2 -translate-x-1/2 z-[7] flex flex-col items-center gap-2 transition-opacity duration-1000"
         style={{ opacity: show(4) ? 0.5 : 0 }}
       >
         <span className="font-mono text-[10px] uppercase tracking-widestx text-bone-faint">

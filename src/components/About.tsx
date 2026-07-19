@@ -1,6 +1,7 @@
 import { useReveal } from '../hooks/useReveal';
+import ScrollFloat from './ScrollFloat';
 
-const skills = ['UI/UX Design', 'Cybersecurity', 'Product Thinking', 'Creative Direction', 'Full-Stack Dev'];
+const skills = ['Design', 'Cybersecurity', 'Product Thinking', 'Creative Direction', 'Full-Stack Dev'];
 
 export default function About() {
   const { ref, shown } = useReveal<HTMLElement>();
@@ -14,9 +15,8 @@ export default function About() {
       {/* faint background letters */}
       <span
         aria-hidden
-        className={`pointer-events-none absolute inset-0 flex items-center justify-center font-display font-extrabold tracking-tightest text-bone leading-none select-none transition-opacity duration-[2500ms] ${
-          shown ? 'opacity-[0.035]' : 'opacity-0'
-        }`}
+        className={`pointer-events-none absolute inset-0 flex items-center justify-center font-display font-extrabold tracking-tightest text-bone leading-none select-none transition-opacity duration-[2500ms] ${shown ? 'opacity-[0.035]' : 'opacity-0'
+          }`}
         style={{ fontSize: '28vw', whiteSpace: 'nowrap' }}
       >
         KAARNESH
@@ -32,17 +32,28 @@ export default function About() {
         </p>
 
         {/* headline */}
-        <h2
-          className={`reveal mt-8 font-display font-extrabold tracking-tightest text-bone leading-[0.88] ${on}`}
+        <div
+          className={`reveal mt-8 font-display font-extrabold tracking-tightest leading-[0.88] ${on}`}
           style={{
-            fontSize: 'clamp(3.2rem, 8.5vw, 8rem)',
+            fontSize: 'clamp(3.2rem, 8.5vw, 6rem)',
             transitionDelay: '80ms',
           }}
         >
-          One box
-          <br />
-          <span className="text-crimson">wasn't enough.</span>
-        </h2>
+          <ScrollFloat
+            animationDuration={1}
+            stagger={0.03}
+            textClassName="text-bone leading-[0.88]"
+          >
+            One box
+          </ScrollFloat>
+          <ScrollFloat
+            animationDuration={1}
+            stagger={0.03}
+            textClassName="text-crimson leading-[0.88]"
+          >
+            wasn't enough.
+          </ScrollFloat>
+        </div>
 
         {/* paragraphs */}
         <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
@@ -67,7 +78,7 @@ export default function About() {
               className={`reveal font-sans text-lg leading-relaxed text-bone-muted ${on}`}
               style={{ transitionDelay: '320ms' }}
             >
-              I'm not trying to be the next anyone. I want to found something unconventional — a company that doesn't look like what came before it, because it doesn't have to.
+              I'm not trying to be the next anyone. I want to found something unconventional.
             </p>
 
             {/* skill tags */}
